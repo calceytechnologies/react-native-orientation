@@ -112,8 +112,15 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
         if (activity == null) {
             return;
         }
-        if (android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
+        if (android.provider.Settings.System.getInt(getReactApplicationContext().getContentResolver(), android.provider.Settings.System.ACCELEROMETER_ROTATION, 0) == 1) {
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        } else {
+            final int orientationInt = getReactApplicationContext().getResources().getConfiguration().orientation;
+            if (orientationInt == Configuration.ORIENTATION_LANDSCAPE) {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            } else {
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
         }
     }
 
