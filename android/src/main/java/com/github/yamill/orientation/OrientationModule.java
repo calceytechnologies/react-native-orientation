@@ -107,7 +107,7 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
     }
 
     @ReactMethod
-    public void unlockAllOrientations() {
+    public void unlockAllOrientations(String status) {
         final Activity activity = getCurrentActivity();
         if (activity == null) {
             return;
