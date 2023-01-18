@@ -51,8 +51,8 @@ module.exports = {
     Orientation.lockToLandscapeLeft();
   },
 
-  unlockAllOrientations() {
-    Orientation.unlockAllOrientations();
+  unlockAllOrientations(status) {
+    Orientation.unlockAllOrientations(status);
   },
 
   addOrientationListener(cb) {

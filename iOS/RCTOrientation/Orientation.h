@@ -11,6 +11,7 @@
 #endif
 
 @interface Orientation : NSObject <RCTBridgeModule>
+@property(nonatomic) UIDeviceOrientation *lastFixedOri;
 + (void)setOrientation: (UIInterfaceOrientationMask)orientation;
 + (UIInterfaceOrientationMask)getOrientation;
 @end

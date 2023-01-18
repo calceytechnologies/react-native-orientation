@@ -177,6 +177,7 @@ RCT_EXPORT_METHOD(lockToPortrait)
 #if DEBUG
     NSLog(@"Locked to Portrait");
 #endif
+    _lastFixedOri = UIDeviceOrientationPortrait;
     [Orientation setOrientation:UIInterfaceOrientationMaskPortrait];
     [self lockToOrientationWithMask:UIInterfaceOrientationMaskPortrait interfaceOrientation:UIInterfaceOrientationPortrait deviceOrientation:UIDeviceOrientationPortrait];
 }
@@ -189,9 +190,11 @@ RCT_EXPORT_METHOD(lockToLandscape)
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     NSString *orientationStr = [self getSpecificOrientationStr:orientation];
     if ([orientationStr isEqualToString:@"LANDSCAPE-LEFT"]) {
+        _lastFixedOri = UIDeviceOrientationLandscapeLeft;
         [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
         [self lockToOrientationWithMask:UIInterfaceOrientationMaskLandscapeRight interfaceOrientation:UIInterfaceOrientationLandscapeRight deviceOrientation:UIDeviceOrientationLandscapeRight];
     } else {
+        _lastFixedOri = UIDeviceOrientationLandscapeRight;
         [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeLeft];
         [self lockToOrientationWithMask:UIInterfaceOrientationMaskLandscapeLeft interfaceOrientation:UIInterfaceOrientationLandscapeLeft deviceOrientation:UIDeviceOrientationLandscapeLeft];
     }
@@ -203,9 +206,9 @@ RCT_EXPORT_METHOD(lockToLandscapeLeft)
 #if DEBUG
     NSLog(@"Locked to Landscape Left");
 #endif
-    [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeLeft];
-    [self lockToOrientationWithMask:UIInterfaceOrientationMaskLandscapeLeft interfaceOrientation:UIInterfaceOrientationLandscapeLeft deviceOrientation:UIDeviceOrientationLandscapeLeft];
-    
+    _lastFixedOri = UIDeviceOrientationLandscapeLeft;
+    [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
+    [self lockToOrientationWithMask:UIInterfaceOrientationMaskLandscapeRight interfaceOrientation:UIInterfaceOrientationLandscapeRight deviceOrientation:UIDeviceOrientationLandscapeRight];
 }
 
 RCT_EXPORT_METHOD(lockToLandscapeRight)
@@ -213,18 +216,23 @@ RCT_EXPORT_METHOD(lockToLandscapeRight)
 #if DEBUG
     NSLog(@"Locked to Landscape Right");
 #endif
+    _lastFixedOri = UIDeviceOrientationLandscapeRight;
     [Orientation setOrientation:UIInterfaceOrientationMaskLandscapeRight];
-    [self lockToOrientationWithMask:UIInterfaceOrientationMaskLandscapeRight interfaceOrientation:UIInterfaceOrientationLandscapeRight deviceOrientation:UIDeviceOrientationLandscapeRight];
+    [self lockToOrientationWithMask:UIInterfaceOrientationMaskLandscapeLeft interfaceOrientation:UIInterfaceOrientationLandscapeLeft deviceOrientation:UIDeviceOrientationLandscapeLeft];
 }
 
-RCT_EXPORT_METHOD(unlockAllOrientations)
+RCT_EXPORT_METHOD(unlockAllOrientations: (NSString *)status)
 {
   #if DEBUG
     NSLog(@"Unlock All Orientations");
   #endif
-  UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    UIDeviceOrientation *currentOri = _lastFixedOri;
+    if ([status isEqualToString:@"true"]) {
+        currentOri = orientation;
+    }
   [Orientation setOrientation:UIInterfaceOrientationMaskAllButUpsideDown];
-  [self lockToOrientationWithMask:UIInterfaceOrientationMaskAllButUpsideDown interfaceOrientation:UIInterfaceOrientationMaskAllButUpsideDown deviceOrientation:orientation];
+    [self lockToOrientationWithMask:UIInterfaceOrientationUnknown interfaceOrientation:UIInterfaceOrientationMaskAll deviceOrientation:currentOri];
 }
 
 - (NSDictionary *)constantsToExport
